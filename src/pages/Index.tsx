@@ -4,9 +4,10 @@ import Sidebar from '@/components/messenger/Sidebar';
 import ChatWindow from '@/components/messenger/ChatWindow';
 import ContactsList from '@/components/messenger/ContactsList';
 import ProfilePanel from '@/components/messenger/ProfilePanel';
+import SettingsPanel from '@/components/messenger/SettingsPanel';
 import EmptyState from '@/components/messenger/EmptyState';
 
-type Tab = 'chats' | 'contacts' | 'profile';
+type Tab = 'chats' | 'contacts' | 'profile' | 'settings';
 
 export default function Index() {
   const [activeChat, setActiveChat] = useState<string | null>(null);
@@ -36,6 +37,7 @@ export default function Index() {
   };
 
   const renderMain = () => {
+    if (tab === 'settings') return <SettingsPanel onClose={() => setTab('chats')} />;
     if (tab === 'contacts') return <ContactsList searchQuery={searchQuery} onStartChat={handleStartChat} />;
     if (tab === 'profile') return <ProfilePanel />;
     if (chat) return <ChatWindow key={chat.id} chat={chat} onBack={handleBack} />;

@@ -7,8 +7,8 @@ interface SidebarProps {
   chats: Chat[];
   activeId: string | null;
   onSelect: (id: string) => void;
-  onTabChange: (tab: 'chats' | 'contacts' | 'profile') => void;
-  tab: 'chats' | 'contacts' | 'profile';
+  onTabChange: (tab: 'chats' | 'contacts' | 'profile' | 'settings') => void;
+  tab: 'chats' | 'contacts' | 'profile' | 'settings';
   searchQuery: string;
   onSearch: (q: string) => void;
 }
@@ -130,8 +130,13 @@ export default function Sidebar({ chats, activeId, onSelect, onTabChange, tab, s
             <div className="text-[10px] text-muted-foreground truncate">@{currentUser.username}</div>
           </div>
         </button>
-        <button onClick={() => onTabChange('profile')} className="w-7 h-7 rounded-lg hover:bg-muted flex items-center justify-center transition-colors">
-          <Icon name="Settings" size={15} className="text-muted-foreground" />
+        <button
+          onClick={() => onTabChange('settings')}
+          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${
+            tab === 'settings' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground'
+          }`}
+        >
+          <Icon name="Settings" size={15} />
         </button>
       </div>
     </div>
