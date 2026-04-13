@@ -53,7 +53,7 @@ function validateUsername(val: string) {
   return '';
 }
 
-type Section = 'main' | 'profile' | 'language';
+type Section = 'main' | 'profile' | 'language' | 'accounts';
 
 interface SettingsPanelProps {
   onClose?: () => void;
@@ -85,6 +85,15 @@ export default function SettingsPanel({ onClose }: SettingsPanelProps) {
   // Cache
   const [cacheCleared, setCacheCleared] = useState(false);
 
+  // Linked accounts
+  const [linkedPhone, setLinkedPhone] = useState('+7 900 000 00 00');
+  const [linkedEmail, setLinkedEmail] = useState('');
+  const [linkedGoogle, setLinkedGoogle] = useState('morozov@gmail.com');
+  const [addingEmail, setAddingEmail] = useState(false);
+  const [addingPhone, setAddingPhone] = useState(false);
+  const [tempEmail, setTempEmail] = useState('');
+  const [tempPhone, setTempPhone] = useState('');
+
   const toggleDark = () => {
     const next = !darkMode;
     setDarkMode(next);
@@ -109,6 +118,115 @@ export default function SettingsPanel({ onClose }: SettingsPanelProps) {
     l.label.toLowerCase().includes(langSearch.toLowerCase()) ||
     l.code.toLowerCase().includes(langSearch.toLowerCase())
   );
+
+  // ─── ACCOUNTS section ────────────────────────────────────────────
+  if (section === 'accounts') {
+    return (
+      <div className="flex flex-col h-full bg-background animate-fade-in">
+        <div className="px-4 pt-5 pb-4 flex items-center gap-3 border-b border-border">
+          <button onClick={() => setSection('main')} className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center transition-colors">
+            <Icon name="ArrowLeft" size={17} className="text-muted-foreground" />
+          </button>
+          <h2 className="text-base font-bold text-foreground flex-1">Привязанные аккаунты</h2>
+        </div>
+        <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4 space-y-3">
+          <p className="text-xs text-muted-foreground px-1 mb-2">Привяжите дополнительные способы входа к вашему аккаунту</p>
+
+          {/* Phone */}
+          <div className="bg-muted rounded-2xl overflow-hidden">
+            <div className="flex items-center gap-3 px-4 py-3.5">
+              <div className="w-9 h-9 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+                <Icon name="Phone" size={17} className="text-green-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-foreground">Телефон</div>
+                {linkedPhone
+                  ? <div className="text-xs text-muted-foreground">{linkedPhone}</div>
+                  : <div className="text-xs text-muted-foreground">Не привязан</div>
+                }
+              </div>
+              {linkedPhone ? (
+                <button onClick={() => setLinkedPhone('')} className="text-xs text-destructive font-medium hover:opacity-80">Отвязать</button>
+              ) : (
+                <button onClick={() => setAddingPhone(true)} className="text-xs text-primary font-medium hover:opacity-80">Привязать</button>
+              )}
+            </div>
+            {addingPhone && (
+              <div className="px-4 pb-3 flex gap-2">
+                <input
+                  type="tel"
+                  value={tempPhone}
+                  onChange={e => setTempPhone(e.target.value)}
+                  placeholder="+7 900 000 00 00"
+                  className="flex-1 bg-background rounded-xl px-3 py-2 text-sm outline-none border border-border focus:border-primary text-foreground"
+                />
+                <button onClick={() => { if (tempPhone) { setLinkedPhone(tempPhone); setAddingPhone(false); setTempPhone(''); } }} className="px-3 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-medium">Ок</button>
+              </div>
+            )}
+          </div>
+
+          {/* Email */}
+          <div className="bg-muted rounded-2xl overflow-hidden">
+            <div className="flex items-center gap-3 px-4 py-3.5">
+              <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                <Icon name="Mail" size={17} className="text-blue-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-foreground">Email</div>
+                {linkedEmail
+                  ? <div className="text-xs text-muted-foreground truncate">{linkedEmail}</div>
+                  : <div className="text-xs text-muted-foreground">Не привязан</div>
+                }
+              </div>
+              {linkedEmail ? (
+                <button onClick={() => setLinkedEmail('')} className="text-xs text-destructive font-medium hover:opacity-80">Отвязать</button>
+              ) : (
+                <button onClick={() => setAddingEmail(true)} className="text-xs text-primary font-medium hover:opacity-80">Привязать</button>
+              )}
+            </div>
+            {addingEmail && (
+              <div className="px-4 pb-3 flex gap-2">
+                <input
+                  type="email"
+                  value={tempEmail}
+                  onChange={e => setTempEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  className="flex-1 bg-background rounded-xl px-3 py-2 text-sm outline-none border border-border focus:border-primary text-foreground"
+                />
+                <button onClick={() => { if (tempEmail.includes('@')) { setLinkedEmail(tempEmail); setAddingEmail(false); setTempEmail(''); } }} className="px-3 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-medium">Ок</button>
+              </div>
+            )}
+          </div>
+
+          {/* Google */}
+          <div className="bg-muted rounded-2xl overflow-hidden">
+            <div className="flex items-center gap-3 px-4 py-3.5">
+              <div className="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0 text-lg font-bold text-orange-500">G</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-foreground">Google</div>
+                {linkedGoogle
+                  ? <div className="text-xs text-muted-foreground truncate">{linkedGoogle}</div>
+                  : <div className="text-xs text-muted-foreground">Не привязан</div>
+                }
+              </div>
+              {linkedGoogle ? (
+                <button onClick={() => setLinkedGoogle('')} className="text-xs text-destructive font-medium hover:opacity-80">Отвязать</button>
+              ) : (
+                <button onClick={() => setLinkedGoogle('morozov@gmail.com')} className="text-xs text-primary font-medium hover:opacity-80">Привязать</button>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl px-4 py-3 flex items-start gap-2">
+            <Icon name="Info" size={15} className="text-amber-500 mt-0.5 flex-shrink-0" />
+            <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
+              Привязав несколько способов входа, вы не потеряете доступ к аккаунту даже при смене номера или почты.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // ─── PROFILE section ────────────────────────────────────────────
   if (section === 'profile') {
@@ -366,6 +484,29 @@ export default function SettingsPanel({ onClose }: SettingsPanelProps) {
               </button>
             </div>
           ))}
+        </div>
+
+        {/* Section: Аккаунты */}
+        <div className="px-4 pt-4 pb-2">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Безопасность</span>
+        </div>
+
+        <div className="mx-4 mb-2">
+          <button
+            onClick={() => setSection('accounts')}
+            className="w-full flex items-center justify-between bg-muted rounded-2xl px-4 py-3.5 hover:bg-muted/70 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <Icon name="Link" size={16} className="text-green-600" />
+              </div>
+              <div className="text-left">
+                <div className="text-sm font-medium text-foreground">Привязанные аккаунты</div>
+                <div className="text-[11px] text-muted-foreground">Телефон, Email, Google</div>
+              </div>
+            </div>
+            <Icon name="ChevronRight" size={16} className="text-muted-foreground" />
+          </button>
         </div>
 
         {/* Section: Данные */}
