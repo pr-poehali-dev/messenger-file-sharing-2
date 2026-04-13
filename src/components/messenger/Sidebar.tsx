@@ -32,7 +32,7 @@ export default function Sidebar({ chats, activeId, onSelect, onTabChange, tab, s
     <div className="flex flex-col h-full bg-card border-r border-border w-72 flex-shrink-0">
       {/* Header */}
       <div className="px-4 pt-5 pb-3 flex items-center justify-between">
-        <h1 className="text-lg font-bold tracking-tight text-foreground">Волна</h1>
+        <h1 className="text-lg font-bold tracking-tight text-primary">Flex</h1>
         <div className="flex items-center gap-1">
           {notif && (
             <button className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center transition-colors relative">
